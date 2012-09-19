@@ -1,4 +1,4 @@
-*.pyc
+*.py[oc]
 .*.sw[po]
 test.db
 local_settings.py

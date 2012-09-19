@@ -52,9 +52,10 @@ class FacebookAuth(BaseOAuth2):
     AUTHORIZATION_URL = 'https://www.facebook.com/dialog/oauth'
     SETTINGS_KEY_NAME = 'FACEBOOK_APP_ID'
     SETTINGS_SECRET_NAME = 'FACEBOOK_API_SECRET'
+    EXTENDED_PERMISSIONS_NAME = 'FACEBOOK_EXTENDED_PERMISSIONS'
 
     def get_scope(self):
-        return setting('FACEBOOK_EXTENDED_PERMISSIONS', [])
+        return setting(self.EXTENDED_PERMISSIONS_NAME, [])
 
     def user_data(self, access_token):
         """Loads user data from service"""
@@ -77,9 +78,9 @@ class FacebookAuth(BaseOAuth2):
         """Completes loging process, must return user instance"""
         if 'code' in self.data:
             url = 'https://graph.facebook.com/oauth/access_token?' + \
-                  urlencode({'client_id': setting('FACEBOOK_APP_ID'),
+                  urlencode({'client_id': setting(self.SETTINGS_KEY_NAME),
                              'redirect_uri': self.redirect_uri,
-                             'client_secret': setting('FACEBOOK_API_SECRET'),
+                             'client_secret': setting(self.SETTINGS_SECRET_NAME),
                              'code': self.data['code']})
             response = cgi.parse_qs(urlopen(url).read())
             access_token = response['access_token'][0]
@@ -107,7 +108,6 @@ class FacebookAuth(BaseOAuth2):
     def enabled(cls):
         """Return backend enabled status by checking basic settings"""
         return setting('FACEBOOK_APP_ID') and setting('FACEBOOK_API_SECRET')
-
 
 # Backend definition
 BACKENDS = {
